@@ -23,10 +23,12 @@ public class BookController {
 	public ResponseEntity<List<BookDTO>> getAllBooks() {
 		return ResponseEntity.ok(bookService.getAllBooks());
 	}
+
 	@GetMapping("/{id}")
-	public ResponseEntity<Optional<Book>>getBookById(@PathVariable  Long id){
+	public ResponseEntity<Optional<Book>> getBookById(@PathVariable Long id) {
 		return ResponseEntity.ok(bookService.getBookById(id));
 	}
+
 	@PostMapping
 	public ResponseEntity<List<BookDTO>> createBooks(@RequestBody List<BookDTO> bookDTOS) {
 		if (bookDTOS == null || bookDTOS.isEmpty()) {

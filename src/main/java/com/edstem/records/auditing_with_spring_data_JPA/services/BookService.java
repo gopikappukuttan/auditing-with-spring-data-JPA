@@ -24,7 +24,7 @@ public class BookService {
 				.collect(Collectors.toList());
 	}
 
-	public Optional<Book> getBookById(Long id){
+	public Optional<Book> getBookById(Long id) {
 		return bookRepository.findById(id);
 	}
 
