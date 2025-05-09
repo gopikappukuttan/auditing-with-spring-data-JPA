@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -15,4 +17,8 @@ public class BookDTO {
 	private String author;
 	private String isbn;
 	private double price;
+	private String createdBy;
+	private LocalDate createdDate;
+	private String lastModifiedBy;
+	private LocalDate lastModifiedDate;
 }

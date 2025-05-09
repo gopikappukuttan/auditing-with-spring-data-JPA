@@ -1,12 +1,12 @@
 package com.edstem.records.auditing_with_spring_data_JPA.services;
 
 import com.edstem.records.auditing_with_spring_data_JPA.contracts.BookDTO;
+import com.edstem.records.auditing_with_spring_data_JPA.exceptions.ResourceNotFoundException;
 import com.edstem.records.auditing_with_spring_data_JPA.models.Book;
 import com.edstem.records.auditing_with_spring_data_JPA.repositories.BookRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,8 +24,10 @@ public class BookService {
 				.collect(Collectors.toList());
 	}
 
-	public Optional<Book> getBookById(Long id) {
-		return bookRepository.findById(id);
+	public BookDTO getBookById(Long id) {
+		Book book = bookRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("Book with id " + id + " not found"));
+		return convertToDTO(book);
 	}
 
 	public List<BookDTO> createBooks(List<BookDTO> bookDTO) {
@@ -38,23 +40,22 @@ public class BookService {
 				.collect(Collectors.toList());
 	}
 
-	public Optional<Book> updateBook(Long id, Book books) {
-		return bookRepository.findById(id).map(
-				book -> {
+	public BookDTO updateBook(Long id, Book books) {
+		Book book = bookRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("Book with id " + id + " not found")); bookRepository.findById(id);
 					book.setTitle(books.getTitle());
 					book.setAuthor(books.getAuthor());
 					book.setIsbn(books.getIsbn());
 					book.setPrice(books.getPrice());
-					return bookRepository.save(book);
+					Book updatedBook= bookRepository.save(book);
+					return convertToDTO(updatedBook);
 				}
-		);
-	}
 
-	public boolean deleteBook(Long id) {
-		return bookRepository.findById(id).map(book -> {
-			bookRepository.delete(book);
-			return true;
-		}).orElse(false);
+
+	public void deleteBook(Long id) {
+		Book book= bookRepository.findById(id)
+				.orElseThrow(()-> new ResourceNotFoundException("Book with id " + id + " not found"));
+		bookRepository.delete(book);
 	}
 
 	private BookDTO convertToDTO(Book book) {
@@ -64,12 +65,15 @@ public class BookService {
 				.isbn(book.getIsbn())
 				.author(book.getAuthor())
 				.price(book.getPrice())
+				.createdDate(book.getCreatedDate())
+				.createdBy(book.getCreatedBy())
+				.lastModifiedBy(book.getLastModifiedBy())
+				.lastModifiedDate(book.getLastModifiedDate())
 				.build();
 	}
 
 	private Book convertToEntity(BookDTO bookDTO) {
 		return Book.builder()
-				.id(bookDTO.getId())
 				.title(bookDTO.getTitle())
 				.isbn(bookDTO.getIsbn())
 				.author(bookDTO.getAuthor())
@@ -77,3 +81,4 @@ public class BookService {
 				.build();
 	}
 }
+
