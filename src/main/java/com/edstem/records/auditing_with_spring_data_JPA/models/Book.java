@@ -32,7 +32,7 @@ public class Book {
 
 	private String isbn;
 
-	private double price;
+	private Double price;
 
 	@CreatedBy
 	private String createdBy;
